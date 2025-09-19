@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>BudgetWave — Controle simples com a regra dos 10%</title>
+
+    <!-- FAVICON (data URL; sem 404) -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="%230ea5e9"/><stop offset="1" stop-color="%233b82f6"/></linearGradient></defs><rect width="128" height="128" rx="28" fill="%23f8fafc"/><path d="M64 16l32 48-32 48-32-48z" fill="url(%23g)" stroke="%230ea5e9" stroke-width="4"/></svg>'
+    />
+
+    <!-- Framework base (mantemos apenas as bibliotecas; sem o seu main.css por enquanto) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@picocss/pico@2.0.6/css/pico.min.css"
+    />
+
+    <!-- Color picker (para o input de cor das categorias) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@melloware/coloris@latest/dist/coloris.min.css"
+    />
+
+    <!-- Toastify (feedback visual) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <link rel="stylesheet" href="./main.css" />
+  </head>
+
+  <body>
+    <main class="container">
+      <header class="app-header">
+        <div class="brand">
+          <h1>BudgetWave</h1>
+          <p class="tagline">
+            Planejamento inteligente com
+            <span class="accent">metas automáticas</span>.
+          </p>
+        </div>
+
+        <div class="header-actions">
+          <nav class="socials" aria-label="Redes de Lucas Motoso">
+            <!-- LinkedIn -->
+            <a
+              class="icon-btn linkedin"
+              href="https://www.linkedin.com/in/lucas-motoso/"
+              target="_blank"
+              rel="noopener"
+              aria-label="LinkedIn de Lucas Motoso"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8.98h4V24h-4V8.98zM8.5 8.98h3.83v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.09V24h-4v-6.72c0-1.6-.03-3.66-2.23-3.66-2.23 0-2.57 1.74-2.57 3.54V24h-4V8.98z"
+                />
+              </svg>
+            </a>
+
+            <!-- GitHub -->
+            <a
+              class="icon-btn github"
+              href="https://github.com/lucasmotoso"
+              target="_blank"
+              rel="noopener"
+              aria-label="GitHub de Lucas Motoso"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.02c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.1-.75.08-.74.08-.74 1.22.09 1.86 1.26 1.86 1.26 1.08 1.86 2.83 1.32 3.52 1.01.11-.79.42-1.32.76-1.62-2.67-.3-5.47-1.33-5.47-5.91 0-1.31.47-2.39 1.25-3.23-.13-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.65.25 2.87.12 3.17.78.84 1.25 1.92 1.25 3.23 0 4.59-2.81 5.6-5.49 5.9.43.38.82 1.12.82 2.26v3.35c0 .32.21.7.83.58A12 12 0 0 0 12 .5Z"
+                />
+              </svg>
+            </a>
+
+            <!-- E-mail -->
+            <a
+              class="icon-btn mail"
+              href="mailto:lucasmotoso@gmail.com"
+              aria-label="Enviar e-mail para lucasmotoso@gmail.com"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z"
+                />
+              </svg>
+            </a>
+
+            <!-- WhatsApp -->
+            <a
+              class="icon-btn whatsapp"
+              href="https://wa.me/5511997154656"
+              target="_blank"
+              rel="noopener"
+              aria-label="Conversar no WhatsApp com Lucas Motoso"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M17.47 14.35c-.27-.14-1.58-.78-1.82-.86-.24-.09-.42-.14-.6.14-.18.27-.69.86-.85 1.04-.16.18-.31.2-.58.07-.27-.14-1.13-.42-2.15-1.33-.79-.7-1.32-1.56-1.47-1.82-.16-.27-.02-.41.12-.55.12-.12.27-.31.4-.47.13-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.6-1.44-.82-1.97-.22-.53-.44-.46-.6-.46-.16 0-.34-.02-.52-.02s-.48.07-.73.34c-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.94 4.68 4.12.65.28 1.16.45 1.56.58.65.21 1.24.18 1.7.11.52-.08 1.58-.65 1.81-1.29.22-.64.22-1.19.16-1.29-.07-.09-.25-.16-.52-.29ZM12.02 2a9.98 9.98 0 0 0-8.56 14.99L2 22l5.13-1.35A9.98 9.98 0 1 0 12.02 2Zm0 18.06c-1.66 0-3.21-.49-4.5-1.33l-.32-.21-3.04.8.81-2.97-.21-.31a7.96 7.96 0 1 1 7.26 3.98Z"
+                />
+              </svg>
+            </a>
+          </nav>
+
+          <button
+            id="btn-theme"
+            class="btn-pill btn-ghost"
+            title="Alternar tema"
+          >
+            🌓&nbsp;Tema
+          </button>
+        </div>
+      </header>
+
+      <!-- KPIs -->
+      <section aria-labelledby="kpis-title">
+        <h2 id="kpis-title">
+          Resumo do mês
+          <small id="current-month" class="muted"></small>
+        </h2>
+
+        <div class="grid">
+          <article>
+            <header>Receita (mês)</header>
+            <h3 id="kpi-income">R$ 0,00</h3>
+          </article>
+          <article>
+            <header>Despesas (mês)</header>
+            <h3 id="kpi-expense">R$ 0,00</h3>
+          </article>
+          <article>
+            <header>Saldo (mês)</header>
+            <h3 id="kpi-balance">R$ 0,00</h3>
+          </article>
+        </div>
+      </section>
+
+      <!-- Gráficos -->
+      <section aria-labelledby="chart-title" id="chart-section">
+        <h2 id="chart-title">Insights do mês</h2>
+
+        <div class="charts-grid">
+          <!-- Donut Receita x Despesa -->
+          <article
+            id="kpi-donut-wrap"
+            class="chart-card"
+            data-chart-empty="true"
+          >
+            <header class="chart-card__title">Receita × Despesa</header>
+            <canvas id="kpi-donut"></canvas>
+            <p class="chart-empty">Sem lançamentos no mês.</p>
+          </article>
+
+          <!-- Pizza por categoria -->
+          <article id="cat-pie-wrap" class="chart-card" data-chart-empty="true">
+            <header class="chart-card__title">Gastos por categoria</header>
+            <canvas id="pie"></canvas>
+            <p class="chart-empty">Adicione uma despesa para ver o gráfico.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Salário e perfil -->
+      <section aria-labelledby="goals-title" class="goals">
+        <h2 id="goals-title">Salário e Perfil (90%)</h2>
+
+        <div class="goals-grid">
+          <!-- Coluna esquerda: salário + help -->
+          <div class="col-left">
+            <label for="salary">Seu salário líquido</label>
+            <div class="input-row">
+              <input
+                id="salary"
+                name="salary"
+                type="text"
+                placeholder="Ex.: 3.500,00"
+                data-mask="brl"
+              />
+              <button id="btn-save-salary" class="btn btn-primary btn-sm">
+                Salvar salário
+              </button>
+            </div>
+
+            <!-- mantém seu accordion já criado -->
+            <details class="help-card" id="salary-help">
+              <summary>Como o BudgetWave calcula</summary>
+
+              <div class="help-body">
+                <ol class="steps">
+                  <li>
+                    <strong>Informe seu salário líquido.</strong> Guardamos
+                    <b>10%</b> automaticamente como <b>Reserva</b>.
+                  </li>
+                  <li>
+                    Os <b>90%</b> restantes formam o
+                    <b>Orçamento do mês (pool)</b>. Você distribui esse valor
+                    nas categorias pelos <b>sliders</b>.
+                  </li>
+                  <li>
+                    Clique em <b>Salvar perfil (normalizar para 90%)</b> para
+                    ajustar a soma dos percentuais.
+                  </li>
+                  <li>
+                    <strong>Lançamentos:</strong> registre <b>despesas</b> nas
+                    categorias e <b>receitas</b> (ex.: salário, freelas) usando
+                    a categoria <b>Renda</b>.
+                  </li>
+                  <li>
+                    A tabela mostra a <b>meta em R$</b> por categoria e o
+                    <b>progresso</b> comparando o que foi gasto com a meta.
+                  </li>
+                </ol>
+
+                <div class="example">
+                  <div class="title">Exemplo rápido</div>
+                  <p>
+                    Salário <b>R$ 3.500,00</b> → Reserva <b>R$ 350,00</b> •
+                    Orçamento (pool) <b>R$ 3.150,00</b>.<br />
+                    Se <b>Mercado = 15%</b>, meta = <b>R$ 472,50</b>. Gastando
+                    R$ 300, o progresso fica em 64% e restam R$ 172,50.
+                  </p>
+                </div>
+
+                <ul class="tips">
+                  <li>
+                    Os percentuais não precisam estar exatos — use
+                    <b>Salvar perfil</b> para fechar em 90%.
+                  </li>
+                  <li>
+                    O gráfico <b>Receita × Despesa × Saldo</b> ajuda a enxergar
+                    o mês rapidamente.
+                  </li>
+                  <li>
+                    Crie novas categorias em <b>Categorias</b> quando precisar.
+                  </li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
+          <!-- Coluna direita: sliders + ações -->
+          <div class="col-right">
+            <p id="profile-sum" class="muted">
+              Soma atual: 0% (deve somar ~90%)
+            </p>
+            <div id="sliders"></div>
+
+            <div class="actions-row">
+              <button id="btn-save-profile" class="btn btn-primary btn-md">
+                Salvar perfil (normalizar para 90%)
+              </button>
+              <button id="btn-apply-goals" class="btn btn-secondary btn-md">
+                Aplicar metas
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p class="muted kpis-line">
+          Reserva: <strong id="reserve-amount">R$ 0,00</strong> &nbsp;•&nbsp;
+          Pool 10%: <strong id="pool-amount">R$ 0,00</strong>
+        </p>
+
+        <div class="table-wrapper goals-table">
+          <table role="grid">
+            <thead>
+              <tr>
+                <th>Categoria</th>
+                <th>%</th>
+                <th>Meta (R$)</th>
+                <th>Progresso</th>
+              </tr>
+            </thead>
+            <tbody id="goals-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Lançamentos -->
+      <section aria-labelledby="tx-title">
+        <h2 id="tx-title">Lançamentos</h2>
+
+        <form id="tx-form" class="grid">
+          <input id="tx-date" type="date" />
+          <input id="tx-desc" type="text" placeholder="Descrição" />
+          <select id="tx-category" aria-label="Categoria"></select>
+          <select id="tx-type">
+            <option value="expense">Despesa</option>
+            <option value="income">Receita</option>
+          </select>
+          <input
+            id="tx-amount"
+            type="text"
+            placeholder="Valor (Ex.: 125,90)"
+            data-mask="brl"
+          />
+         <button type="submit" class="btn-add">Add</button>
+
+        </form>
+
+        <div class="table-wrapper">
+          <table role="grid">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Categoria</th>
+                <th>Tipo</th>
+                <th class="right">Valor</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tx-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Categorias -->
+      <section aria-labelledby="cats-title">
+        <h2 id="cats-title">Categorias</h2>
+        <div class="grid">
+          <input id="new-cat-name" type="text" placeholder="Nova categoria" />
+          <input id="new-cat-color" type="text" value="#14b8a6" data-coloris />
+          <button id="btn-add-cat" class="secondary">Adicionar</button>
+        </div>
+        <div id="cats-list"></div>
+      </section>
+<!-- Sobre -->
+<section id="about" aria-labelledby="about-title" class="about">
+  <h2 id="about-title">Sobre</h2>
+
+  <!-- HERO -->
+  <div class="about-hero card">
+    <!-- ⬇️ COLOQUE AQUI A SUA FOTO (URL) se quiser forçar -->
+    <img id="about-photo" alt="Foto de Lucas Motoso" src="assets/img/author.jpg" />
+
+    <div class="about-text">
+      <h3>Olá! Eu sou o Lucas Motoso</h3>
+      <p class="muted">
+        Analista de Sistemas com foco em BI e Web Analytics: transformo dados em decisão com Power BI/SQL e produtos web performáticos (HTML/CSS/JS) com UX acessível.
+      </p>
+
+      <div class="about-actions">
+        <a href="https://www.linkedin.com/in/lucas-motoso/" target="_blank" rel="noopener" class="btn btn-ghost">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5Zm.02 5.9h3V21h-3zM9.5 9.4h2.9v1.6h.1c.4-.8 1.5-1.7 3.1-1.7C18.8 9.3 21 11 21 14.6V21h-3v-5.5c0-1.3 0-3-1.9-3s-2.2 1.4-2.2 2.9V21h-3z"/></svg>
+          LinkedIn
+        </a>
+        <a href="https://github.com/lucasmotoso" target="_blank" rel="noopener" class="btn btn-ghost">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.08 3.29 9.39 7.86 10.91c.58.1.79-.26.79-.57c0-.28-.01-1.03-.02-2.02c-3.2.7-3.87-1.54-3.87-1.54c-.53-1.35-1.3-1.71-1.3-1.71c-1.06-.73.08-.72.08-.72c1.17.08 1.78 1.2 1.78 1.2c1.04 1.77 2.73 1.26 3.4.96c.11-.76.41-1.26.75-1.55c-2.55-.29-5.23-1.28-5.23-5.68c0-1.26.45-2.3 1.2-3.11c-.12-.29-.52-1.46.11-3.04c0 0 .97-.31 3.18 1.19c.92-.26 1.9-.39 2.88-.39c.98 0 1.96.13 2.88.39c2.2-1.5 3.17-1.19 3.17-1.19c.63 1.58.23 2.75.11 3.04c.75.81 1.2 1.85 1.2 3.11c0 4.41-2.68 5.38-5.24 5.67c.42.36.8 1.07.8 2.16c0 1.56-.01 2.81-.01 3.2c0 .32.21.69.8.57A11.5 11.5 0 0 0 23.5 12A11.5 11.5 0 0 0 12 .5Z"/></svg>
+          GitHub
+        </a>
+        <a href="mailto:lucasmotoso@gmail.com" class="btn btn-ghost">E-mail</a>
+        <a href="https://wa.me/5511997154656" target="_blank" rel="noopener" class="btn btn-ghost">WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJETOS DO GITHUB -->
+  <h3 class="about-subtitle">Projetos em destaque</h3>
+  <div id="gh-projects" class="gh-grid" data-loading="true">
+    <div class="gh-card skeleton"></div>
+    <div class="gh-card skeleton"></div>
+    <div class="gh-card skeleton"></div>
+  </div>
+</section>
+
+
+
+
+
+      <footer class="app-footer" role="contentinfo">
+        <div class="footer-inner">
+          <div class="footer-brand">
+            <h3 class="footer-logo">BudgetWave</h3>
+            <p class="footer-tagline">
+              Planejamento inteligente com
+              <span class="accent">metas automáticas</span>.
+            </p>
+            <p class="copyright">© 2025 • Lucas Motoso — BudgetWave</p>
+          </div>
+
+          <nav class="footer-socials" aria-label="Redes de Lucas Motoso">
+            <!-- LinkedIn -->
+            <a
+              class="icon-btn lg linkedin"
+              href="https://www.linkedin.com/in/lucas-motoso/"
+              target="_blank"
+              rel="noopener"
+              aria-label="LinkedIn de Lucas Motoso"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8.98h4V24h-4V8.98zM8.5 8.98h3.83v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.09V24h-4v-6.72c0-1.6-.03-3.66-2.23-3.66-2.23 0-2.57 1.74-2.57 3.54V24h-4V8.98z"
+                />
+              </svg>
+            </a>
+
+            <!-- GitHub -->
+            <a
+              class="icon-btn lg github"
+              href="https://github.com/lucasmotoso"
+              target="_blank"
+              rel="noopener"
+              aria-label="GitHub de Lucas Motoso"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.02c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.1-.75.08-.74.08-.74 1.22.09 1.86 1.26 1.86 1.26 1.08 1.86 2.83 1.32 3.52 1.01.11-.79.42-1.32.76-1.62-2.67-.3-5.47-1.33-5.47-5.91 0-1.31.47-2.39 1.25-3.23-.13-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.65.25 2.87.12 3.17.78.84 1.25 1.92 1.25 3.23 0 4.59-2.81 5.6-5.49 5.9.43.38.82 1.12.82 2.26v3.35c0 .32.21.7.83.58A12 12 0 0 0 12 .5Z"
+                />
+              </svg>
+            </a>
+
+            <!-- E-mail -->
+            <a
+              class="icon-btn lg mail"
+              href="mailto:lucasmotoso@gmail.com"
+              aria-label="Enviar e-mail para lucasmotoso@gmail.com"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z"
+                />
+              </svg>
+            </a>
+
+            <!-- WhatsApp -->
+            <a
+              class="icon-btn lg whatsapp"
+              href="https://wa.me/5511997154656"
+              target="_blank"
+              rel="noopener"
+              aria-label="Conversar no WhatsApp com Lucas Motoso"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M17.47 14.35c-.27-.14-1.58-.78-1.82-.86-.24-.09-.42-.14-.6.14-.18.27-.69.86-.85 1.04-.16.18-.31.2-.58.07-.27-.14-1.13-.42-2.15-1.33-.79-.7-1.32-1.56-1.47-1.82-.16-.27-.02-.41.12-.55.12-.12.27-.31.4-.47.13-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.6-1.44-.82-1.97-.22-.53-.44-.46-.6-.46-.16 0-.34-.02-.52-.02s-.48.07-.73.34c-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.94 4.68 4.12.65.28 1.16.45 1.56.58.65.21 1.24.18 1.7.11.52-.08 1.58-.65 1.81-1.29.22-.64.22-1.19.16-1.29-.07-.09-.25-.16-.52-.29ZM12.02 2a9.98 9.98 0 0 0-8.56 14.99L2 22l5.13-1.35A9.98 9.98 0 1 0 12.02 2Zm0 18.06c-1.66 0-3.21-.49-4.5-1.33l-.32-.21-3.04.8.81-2.97-.21-.31a7.96 7.96 0 1 1 7.26 3.98Z"
+                />
+              </svg>
+            </a>
+          </nav>
+        </div>
+
+        <div class="footer-glow" aria-hidden="true"></div>
+      </footer>
+    </main>
+
+    <!-- ====== LIBS (ordem correta, UMD) ====== -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/pt-br.js"></script>
+    <script>
+      dayjs.locale("pt-br");
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- (Plugin de rótulos é opcional; se o seu app.js usar, deixe ativo) -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+    <!-- Cleave (máscara BRL) -->
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1/dist/cleave.min.js"></script>
+
+    <!-- Toastify -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- localForage (IndexedDB simples) -->
+    <script src="https://cdn.jsdelivr.net/npm/localforage@1/dist/localforage.min.js"></script>
+
+    <!-- Coloris (color picker) -->
+    <script src="https://cdn.jsdelivr.net/npm/@melloware/coloris@latest/dist/coloris.min.js"></script>
+
+    <!-- Boot mínimo (não substitui o app.js; só garante máscara e mês) -->
+    <script>
+      // Máscara BRL nos inputs marcados
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll('[data-mask="brl"]').forEach((el) => {
+          if (!el._cleave)
+            el._cleave = new Cleave(el, {
+              numeral: true,
+              numeralThousandsGroupStyle: "thousand",
+              numeralDecimalMark: ",",
+              delimiter: ".",
+            });
+        });
+        // Mês atual
+        const cm = document.getElementById("current-month");
+        if (cm && window.dayjs)
+          cm.textContent = "• " + dayjs().format("MMMM [de] YYYY");
+        // Tema persistido
+        const saved = localStorage.getItem("bw:theme");
+        if (saved) document.documentElement.dataset.theme = saved;
+        // Sincroniza Coloris com o tema
+        if (window.Coloris)
+          Coloris({
+            themeMode:
+              document.documentElement.dataset.theme === "dark"
+                ? "dark"
+                : "light",
+          });
+      });
+    </script>
+
+    <!-- Seu JS (deixe este caminho exatamente assim; arquivo ao lado do HTML) -->
+    <script defer src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1536 @@
+/* main.css — BudgetWave (retrowave + parallax, mobile-first) */
+
+/* ===== Tokens ===== */
+:root{
+  /* cores base (light) */
+  --bg:#0b1020;
+  --bg-2:#0f1430;
+  --text:#e6edf7;
+  --muted:#9aa4c7;
+  --surface:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.12);
+
+  /* neon / retrowave */
+  --pink:#ff2cdf;
+  --cyan:#00f0ff;
+  --violet:#8b5cf6;
+  --blue:#38bdf8;
+  --orange:#ffb86b;
+  --ok:#22c55e;
+  --warn:#fbbf24;
+  --danger:#f87171;
+
+  /* gradientes */
+  --grad-1: linear-gradient(135deg, var(--pink), var(--cyan));
+  --grad-2: linear-gradient(135deg, #2d2a77, #0ea5e9 70%);
+  --grad-card: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+  --glow: 0 0 0 1px rgba(255,255,255,.12), 0 10px 30px rgba(0,0,0,.45);
+
+  --radius: 14px;
+  --shadow-soft: 0 12px 40px rgba(0,0,0,.35);
+
+  /* parallax scroll var */
+  --scrollY: 0;
+
+  /* Toasts */
+  --toast-fg:#0b1020;
+  --toast-bg:#e6edf7;
+}
+
+[data-theme="light"]{
+  /* versões claras */
+  --bg:#c6f0f888;
+  --bg-2:#612d7a;
+  --text:#0f172a;
+  --muted:#64748b;
+  --surface:rgba(255,255,255,.75);
+  --border:rgba(0,0,0,.06);
+  --grad-card: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.65));
+  --glow: 0 0 0 1px rgba(0,0,0,.06), 0 12px 30px rgba(2,6,23,.12);
+
+  --toast-fg:#0f172a;
+  --toast-bg:#ffffff;
+}
+
+/* ===== Parallax retrowave ===== */
+html, body{height:100%}
+html,body{background:var(--bg);color:var(--text)}
+body{
+  position:relative;
+  overflow-x:hidden;
+}
+
+/* camadas do fundo (céu + grid) */
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-2;
+}
+
+/* Céu/aurora com leve parallax */
+body::before{
+  background:
+    radial-gradient(60vmax 40vmax at 70% -10%, rgba(255,44,223,.35), transparent 60%),
+    radial-gradient(70vmax 40vmax at 20% -10%, rgba(0,240,255,.25), transparent 60%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 60%);
+  transform: translate3d(0, calc(var(--scrollY)*-0.06px), 0);
+}
+
+/* Grid “horizon” retrowave */
+body::after{
+  z-index:-1;
+  height:140%;
+  top:30%;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.08) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.08) 0 1px, transparent 1px 60px);
+  transform: perspective(900px) rotateX(60deg) translate3d(0, calc(var(--scrollY)*0.05px), 0);
+  opacity:.5;
+  mask-image: linear-gradient(to top, black 0%, transparent 65%);
+}
+
+/* ===== Container / Cards ===== */
+.container{max-width:1060px;padding-block:24px}
+
+section, article{
+  background: var(--grad-card);
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--glow);
+  padding:18px;
+  backdrop-filter: blur(8px);
+}
+
+section>h2{margin:0 0 14px}
+
+/* Header */
+.app-header{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:10px
+}
+.app-header .muted{color:var(--muted);margin:0}
+
+/* ===== Botões (neon) ===== */
+button,.btn,[type="button"],[type="submit"]{
+  writing-mode:horizontal-tb;white-space:nowrap;
+  display:inline-flex;align-items:center;justify-content:center;
+  border-radius:12px;border:1px solid transparent;transition:.2s transform, .2s box-shadow, .2s filter;
+}
+button.primary{
+  background: var(--grad-1);
+  color:white;
+  box-shadow: 0 10px 25px rgba(255,44,223,.25), 0 0 0 1px rgba(255,255,255,.12) inset;
+}
+button.primary:hover{transform:translateY(-1px); filter:brightness(1.03)}
+button.secondary{background: var(--grad-2); color:white}
+button.secondary:hover{transform:translateY(-1px); filter:brightness(1.05)}
+button.outline{background:transparent;border-color:var(--border);color:var(--text)}
+button.contrast{background:rgba(255,255,255,.08)}
+
+/* ===== KPI ===== */
+#kpis-title + .grid{gap:16px}
+#kpis-title + .grid article{
+  display:flex;flex-direction:column;gap:6px;
+  border-radius:12px;background: rgba(255,255,255,.06);
+  border:1px solid var(--border); box-shadow: var(--shadow-soft)
+}
+#kpis-title + .grid article header{font-size:.9rem;color:var(--muted)}
+#kpis-title + .grid article h3{font-size:1.5rem;font-weight:800;margin:0}
+
+/* ===== Perfil/Sliders ===== */
+.field-row{
+  display:grid;grid-template-columns:minmax(120px,1fr) 1fr auto auto;
+  gap:10px;align-items:center;margin-bottom:12px
+}
+.field-row label{color:var(--muted)}
+.field-row .right{text-align:right}
+input[type="range"]{width:100%;accent-color:var(--blue)}
+
+/* ===== Goalbar ===== */
+.goalbar{position:relative;height:12px;background:rgba(148,163,184,.22);border-radius:999px;overflow:hidden}
+.goalbar__fill{position:absolute;inset:0 auto 0 0;height:100%;background:var(--ok)}
+.goalbar__over{position:absolute;right:0;top:0;bottom:0;background:var(--danger);opacity:.35}
+.goalbar__label{display:block;margin-top:6px;font-size:.9rem;color:var(--muted)}
+
+/* Reserva / Pool */
+.reserve-pool{display:flex;gap:16px;color:var(--muted)}
+
+/* ===== Tabelas ===== */
+.table-wrapper{overflow-x:auto}
+td.num,[class="right"]{text-align:right}
+
+/* ===== Categorias (grid bonito) ===== */
+#cats-list.cats,
+.cats{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+  gap:10px;
+}
+.cat{
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:8px 12px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.cat .badge{width:10px;height:10px;border-radius:999px;margin-right:6px;display:inline-block}
+.cat .label{display:flex;align-items:center;gap:8px}
+.cat button{
+  border:none;background:transparent;color:#c084fc; /* roxo neon */
+  padding:0 6px;cursor:pointer;font-weight:700
+}
+.cat button:hover{color:#f472b6}
+
+/* ===== Gráfico e estado vazio ===== */
+#chart-section{position:relative}
+#pie{width:100%;max-height:300px}
+.chart-empty{display:none;color:var(--muted);text-align:center;margin-top:8px}
+[data-chart-empty="true"] .chart-empty{display:block}
+[data-chart-empty="true"] #pie{opacity:.25;filter:grayscale(1)}
+
+/* ===== Toastify (skins) ===== */
+.toastify{
+  color: var(--toast-fg);
+  background: var(--toast-bg);
+  border-radius:12px;
+  border:1px solid var(--border);
+  box-shadow: 0 10px 28px rgba(2,6,23,.25);
+}
+.toastify.tw-success{ background:linear-gradient(135deg, #d1fae5, #bbf7d0) }
+.toastify.tw-info{    background:linear-gradient(135deg, #e0f2fe, #cffafe) }
+.toastify.tw-error{   background:linear-gradient(135deg, #fee2e2, #fecaca) }
+.toastify.tw-warn{    background:linear-gradient(135deg, #fef3c7, #fde68a) }
+
+/* ===== Responsivo ===== */
+@media (min-width:720px){
+  #goals-title + .grid{grid-template-columns:1fr 1fr}
+}
+/* ====== HEADER (glass + neon underline) =================================== */
+.app-header{
+  position: relative;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; margin:0 0 12px;
+  padding:12px 16px;
+  background: var(--grad-card);
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--glow);
+  backdrop-filter: blur(8px);
+}
+.app-header::after{
+  content:"";
+  position:absolute; left:14px; right:14px; bottom:-2px; height:2px;
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  filter: blur(.6px); opacity:.75;
+}
+.app-header h1{
+  margin:0; line-height:1;
+  background:linear-gradient(90deg,#8b1a83, var(--cyan) 60%, var(--pink));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.app-header .muted{ margin:2px 0 0; color:var(--muted) }
+.header-actions{ display:flex; align-items:center; gap:10px }
+
+/* Tema pill (mantém seu id atual) */
+#btn-theme{
+  border-radius:999px; padding:8px 12px;
+  background: radial-gradient(18px 18px at 12% 50%, var(--pink), transparent 40%),
+              radial-gradient(18px 18px at 35% 50%, var(--cyan), transparent 40%),
+              var(--surface);
+  border:1px solid var(--border);
+}
+#btn-theme:hover{ filter:brightness(1.05) }
+
+/* ====== CARDS / SECTIONS =================================================== */
+.container{ max-width:1060px; padding-inline:8px }
+section, article{
+  border-radius: var(--radius);
+  padding: 16px;
+  background: var(--grad-card);
+  border:1px solid var(--border);
+  box-shadow: var(--glow);
+  backdrop-filter: blur(8px);
+}
+section + section{ margin-top:14px }
+section>h2{ margin:0 0 14px }
+
+/* grid geral dos blocos internos */
+.grid{ gap:12px }
+
+/* ====== KPI CARDS ========================================================== */
+#kpis-title + .grid{ gap:14px }
+#kpis-title + .grid article{
+  display:flex; flex-direction:column; gap:6px; height:100%;
+  border-radius:12px; background: rgba(255,255,255,.06);
+  border:1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  position:relative; overflow:hidden;
+}
+#kpis-title + .grid article::after{
+  content:""; position:absolute; inset:-2px -2px auto auto; width:60%;
+  height:70%; pointer-events:none;
+  background: radial-gradient(60% 80% at 100% 0%, rgba(56,189,248,.25), transparent 65%),
+              radial-gradient(40% 60% at 80% 10%, rgba(255,44,223,.18), transparent 70%);
+  filter: blur(6px);
+}
+#kpis-title + .grid article header{ font-size:.9rem; color:var(--muted) }
+#kpis-title + .grid article h3{ font-size:1.45rem; font-weight:800; margin:0 }
+
+/* ====== BOTÕES: base + variantes ========================================== */
+.btn, button, [type=button], [type=submit]{
+  writing-mode:horizontal-tb; white-space:nowrap;
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:.5rem; border-radius:12px; border:1px solid transparent;
+  padding:.55rem .9rem; font-weight:600; transition:.18s ease;
+}
+button.primary, .btn-primary{
+  background: linear-gradient(135deg, var(--blue), var(--cyan) 60%);
+  color:#fff; box-shadow:0 8px 22px rgba(56,189,248,.28);
+}
+button.primary:hover, .btn-primary:hover{ transform:translateY(-1px); filter:brightness(1.05) }
+
+button.secondary, .btn-secondary{
+  background: linear-gradient(135deg, #2d2a77, var(--blue) 70%);
+  color:#fff; box-shadow:0 8px 22px rgba(99,102,241,.22);
+}
+button.secondary:hover, .btn-secondary:hover{ transform:translateY(-1px); filter:brightness(1.06) }
+
+.btn-ghost{
+  background:transparent; border-color:var(--border); color:var(--text)
+}
+.btn-ghost:hover{ background:rgba(255,255,255,.06) }
+
+.btn-danger{
+  background:rgba(239,68,68,.15); color:#fee2e2; border-color:rgba(239,68,68,.35)
+}
+.btn-danger:hover{ filter:brightness(1.1) }
+
+.btn-pill{ border-radius:999px }
+
+/* versão desktop (maior/arejada) */
+@media (min-width: 960px){
+  .btn, button, [type=button], [type=submit]{ padding:.7rem 1.05rem; font-size:1rem }
+  .btn-lg{ padding:.85rem 1.25rem; font-size:1.05rem }
+}
+
+/* ====== PERFIL / SLIDERS / AÇÕES ========================================== */
+#goals-title + .grid{ align-items:start }
+.field-row{
+  display:grid; grid-template-columns:minmax(120px,1fr) 1fr auto auto;
+  gap:10px; align-items:center; margin-bottom:12px;
+}
+.field-row label{ color:var(--muted) }
+.field-row .right{ text-align:right }
+input[type="range"]{ width:100%; accent-color:var(--blue) }
+
+.actions-row{ display:flex; flex-wrap:wrap; gap:10px }
+.actions-row .btn, .actions-row button{ flex:1 1 180px }
+
+/* ====== GOALBAR / PROGRESSO =============================================== */
+.goalbar{ position:relative; height:12px; background:rgba(148,163,184,.22);
+  border-radius:999px; overflow:hidden }
+.goalbar__fill{ position:absolute; inset:0 auto 0 0; height:100%; background:var(--ok) }
+.goalbar__over{ position:absolute; right:0; top:0; bottom:0; background:var(--danger); opacity:.35 }
+.goalbar__label{ display:block; margin-top:6px; font-size:.9rem; color:var(--muted) }
+
+/* ====== TABELAS / LANÇAMENTOS ============================================= */
+.table-wrapper{ overflow-x:auto }
+table[role="grid"] th{ background:rgba(255,255,255,.05) }
+td.num,[class="right"]{ text-align:right }
+#tx-tbody .btn{ padding:.45rem .7rem }
+#tx-tbody .btn.btn--alt, #tx-tbody .btn-danger{ font-weight:600 }
+#tx-tbody .btn.btn--alt{ background:rgba(59,130,246,.16); color:#cfe3ff }
+
+/* ====== CATEGORIAS (lista com alinhamento dos ícones) ===================== */
+#cats-list{ display:flex; flex-direction:column; gap:8px }
+#cats-list .row{
+  display:grid; grid-template-columns: 1fr auto; align-items:center;
+  padding:8px 12px; border:1px solid var(--border); border-radius:10px;
+  background:rgba(255,255,255,.05)
+}
+#cats-list .row .left{ display:flex; align-items:center; gap:10px }
+#cats-list .row .badge{ width:10px; height:10px; border-radius:999px }
+#cats-list .row .btn{ padding:.35rem .6rem }
+
+/* ====== CHART ============================================================= */
+#chart-section{ position:relative }
+#pie{ width:100%; max-height:300px }
+.chart-empty{ display:none; color:var(--muted); text-align:center; margin-top:8px }
+[data-chart-empty="true"] .chart-empty{ display:block }
+[data-chart-empty="true"] #pie{ opacity:.25; filter:grayscale(1) }
+
+/* ====== LAYOUT RESPONSIVO ================================================= */
+@media (min-width: 720px){
+  #goals-title + .grid{ grid-template-columns:1fr 1fr }
+}
+/* ===== App Bar fixa (glass + sticky) ===== */
+.app-header{
+  position: sticky;       /* acompanha a rolagem dentro do container */
+  top: 8px;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  transition: padding .18s ease, box-shadow .18s ease, background .18s ease, transform .18s ease;
+}
+.app-header.is-scrolled{
+  padding: 8px 12px;                     /* compacta ao rolar */
+  box-shadow: 0 12px 32px rgba(2,6,23,.18);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border-color: color-mix(in srgb, var(--border) 90%, transparent);
+}
+[data-theme="light"] #kpis-title + .grid article::after{
+  background:
+    radial-gradient(60% 80% at 100% 0%, rgba(14,165,233,.18), transparent 65%),
+    radial-gradient(40% 60% at 80% 10%, rgba(217,70,239,.16), transparent 70%);
+}
+/* ===== HEADER: marca + ações ======================================= */
+.app-header{ display:flex; align-items:center; justify-content:space-between; gap:14px }
+.brand h1{ margin:0; line-height:1; letter-spacing:.2px;
+  background:linear-gradient(90deg,#d750c3, var(--cyan) 55%, var(--pink));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.brand .muted{ margin:.25rem 0 0; color:var(--muted) }
+
+.header-actions{ display:flex; align-items:center; gap:10px }
+.socials{ display:flex; align-items:center; gap:8px }
+
+/* ===== Botões de ícone (glass + neon ring) ========================== */
+.icon-btn{
+  width:40px; height:40px; border-radius:999px;
+  display:inline-flex; align-items:center; justify-content:center;
+  background: var(--surface);
+  border:1px solid var(--border);
+  box-shadow: 0 8px 22px rgba(2,6,23,.12);
+  position:relative; overflow:hidden;
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  color: var(--text);
+}
+.icon-btn::after{
+  content:""; position:absolute; inset:-2px;
+  background: linear-gradient(135deg, var(--pink), var(--cyan));
+  opacity:.0; filter: blur(12px);
+  transition: opacity .2s ease;
+  z-index:-1;
+}
+.icon-btn:hover{ transform: translateY(-1px); filter: brightness(1.05) }
+.icon-btn:hover::after{ opacity:.35 }
+
+/* Marcas (cores) */
+.icon-btn.linkedin { color:#0a66c2 }
+.icon-btn.github   { color: color-mix(in srgb, var(--text) 85%, #000 15%) }
+[data-theme="dark"] .icon-btn.github { color:#e5e7eb }
+.icon-btn.mail     { color:#ea4335 }
+.icon-btn.whatsapp { color:#25D366 }
+
+.icon-btn svg{ width:20px; height:20px; display:block }
+
+/* Tema pill */
+#btn-theme.btn-ghost{
+  padding:.55rem .85rem; border-radius:999px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border:1px solid var(--border);
+}
+#btn-theme.btn-ghost:hover{ transform: translateY(-1px); filter: brightness(1.05) }
+
+/* Header sticky shrink (se ainda não colou esse bloco) */
+.app-header{ position: sticky; top: 8px; z-index: 100; backdrop-filter: blur(12px) }
+.app-header.is-scrolled{
+  padding:8px 12px; box-shadow: 0 12px 32px rgba(2,6,23,.18);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border-color: color-mix(in srgb, var(--border) 90%, transparent);
+}
+
+/* Responsivo: encolhe ícone e espaçamento em telas bem estreitas */
+@media (max-width: 420px){
+  .icon-btn{ width:36px; height:36px }
+  #btn-theme.btn-ghost{ padding:.5rem .7rem }
+}
+/* Tagline pro header (clean + sutil neon) */
+.brand .tagline{
+  margin:.25rem 0 0;
+  font-size:.95rem;
+  letter-spacing:.2px;
+  color:var(--muted);
+}
+.brand .tagline .accent{
+  background: linear-gradient(90deg, var(--cyan), var(--pink));
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  font-weight: 600;
+}
+
+
+.app-header.is-scrolled .brand .tagline{
+  opacity:.9; transform: translateY(-1px);
+}
+/* ===== Donut abaixo do "Resumo do mês" ===== */
+.kpi-donut-box{
+  margin-top:12px;
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--grad-card);
+  box-shadow: var(--glow);
+  backdrop-filter: blur(6px);
+  display:flex; align-items:center; justify-content:center;
+  min-height: 200px;
+  position: relative;
+}
+.kpi-donut-box canvas{ max-width: 320px; width: 100% }
+.kpi-donut-box .chart-empty{ display:none; color:var(--muted); position:absolute; bottom:8px }
+#kpi-donut-wrap[data-chart-empty="true"] .chart-empty{ display:block }
+#kpi-donut-wrap[data-chart-empty="true"] canvas{ opacity:.25; filter:grayscale(1) }
+
+/* tema claro: reforça contraste da caixa */
+[data-theme="light"] .kpi-donut-box{
+  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.86));
+  border-color: rgba(2,6,23,.08);
+}
+/* ====== Charts lado a lado (mobile-first) ====== */
+#chart-section .charts-grid{
+  display:grid; gap:12px;
+  margin-top:8px;
+}
+
+/* desktop: 2 colunas equilibradas */
+@media (min-width: 980px){
+  #chart-section .charts-grid{
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+}
+
+/* cartão de gráfico com mesma “altura visual” */
+.chart-card{
+  position:relative;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--grad-card);
+  box-shadow: var(--glow);
+  backdrop-filter: blur(6px);
+
+  /* altura mínima suficiente sem ficar gigante */
+  min-height: 320px;
+
+  /* centraliza o canvas */
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* canvases responsivos porém limitados */
+.chart-card canvas{
+  width:100%;
+  max-width: 420px;      /* tamanho “agradável” no desktop */
+  height:auto;           /* deixa o Chart.js cuidar do aspecto */
+  max-height: 280px;     /* evita ficar pequeno demais no alto */
+}
+
+/* estados vazios consistentes */
+.chart-card .chart-empty{
+  display:none; color:var(--muted); position:absolute; bottom:10px
+}
+.chart-card[data-chart-empty="true"] .chart-empty{ display:block }
+.chart-card[data-chart-empty="true"] canvas{ opacity:.3; filter:grayscale(1) }
+
+/* tema claro: reforço de contraste do card */
+[data-theme="light"] .chart-card{
+  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.86));
+  border-color: rgba(2,6,23,.08);
+}
+/* ===== Charts lado a lado (mobile-first) ===== */
+#chart-section .charts-grid{
+  display:grid; gap:12px; margin-top:8px;
+}
+@media (min-width: 980px){
+  #chart-section .charts-grid{
+    grid-template-columns: 1fr 1fr; align-items: stretch;
+  }
+}
+
+/* Cards de gráfico */
+.chart-card{
+  position:relative; padding:14px 14px 18px;
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--grad-card);
+  box-shadow: var(--glow);
+  backdrop-filter: blur(6px);
+  min-height: 340px;
+  display:flex; flex-direction:column; gap:10px;
+}
+.chart-card__title{
+  font-weight:700; letter-spacing:.2px; margin:0 0 2px;
+}
+
+/* Canvas responsivo */
+.chart-card canvas{
+  flex:1 1 auto; /* ocupa o espaço disponível */
+  width:100%; height:100%;
+  max-height: 280px;  /* desktop confortável */
+}
+@media (max-width: 480px){
+  .chart-card{ min-height: 300px }
+  .chart-card canvas{ max-height: 240px }
+}
+
+/* Estado vazio consistente */
+.chart-card .chart-empty{ display:none; color:var(--muted); text-align:center }
+.chart-card[data-chart-empty="true"] .chart-empty{ display:block }
+.chart-card[data-chart-empty="true"] canvas{ opacity:.3; filter:grayscale(1) }
+
+/* Tema claro: reforço de contraste */
+[data-theme="light"] .chart-card{
+  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.86));
+  border-color: rgba(2,6,23,.08);
+}
+/* ==== App Bar fixa, sem estourar a viewport ==== */
+/* Remove qualquer "sticky" anterior: vamos forçar fixed e delimitar pelos lados */
+.app-header{
+  position: fixed;
+  top: max(env(safe-area-inset-top), 8px);
+  left: max(env(safe-area-inset-left), 8px);
+  right: max(env(safe-area-inset-right), 8px);
+  z-index: 100;
+  margin: 0;
+  width: auto;                 /* não deixa passar da tela */
+  overflow: hidden;            /* recorta brilhos/sombras internas */
+}
+
+/* cria espaço abaixo do header para o conteúdo não ficar por baixo */
+.container{ padding-top: 88px; }  /* ~altura da app-bar + respiro */
+
+/* Header layout seguro no mobile */
+.brand{ min-width: 0; }
+.header-actions{
+  display:flex; align-items:center; gap:8px;
+  flex-wrap: wrap;               /* permite quebrar no mobile */
+  min-width: 0;
+}
+
+/* Ícones: encolhe um pouco em telas pequenas */
+.icon-btn{ width:36px; height:36px; flex:0 0 36px }
+#btn-theme.btn-ghost{ padding:.5rem .7rem; white-space:nowrap }
+@media (max-width: 390px){
+  .brand .tagline{ display:none }            /* evita comprimir textos */
+  .icon-btn{ width:32px; height:32px; flex-basis:32px }
+  #btn-theme.btn-ghost{ padding:.45rem .65rem; font-size:.9rem }
+}
+
+/* ==== Gráficos: garante que não vazem e se ajustem bem ==== */
+#chart-section{ overflow: hidden; } /* previne bleed de sombras/canvas */
+#chart-section .charts-grid{ margin-top: 8px; gap: 12px }
+.chart-card{
+  min-height: 320px;
+  display: flex; flex-direction: column;
+}
+.chart-card canvas{
+  flex: 1 1 auto;
+  width: 100% !important;        /* Chart.js respeita o container */
+  height: auto !important;
+  max-height: 280px;
+}
+@media (max-width: 480px){
+  .chart-card{ min-height: 280px }
+  .chart-card canvas{ max-height: 220px }
+}
+:root{ --appbar-height: 96px; }       /* fallback */
+.container{ padding-top: var(--appbar-height); }
+@media (min-width: 980px){
+  .container{ padding-top: calc(var(--appbar-height) + 24px); }
+}
+/* dá um pouco mais de altura ao card do donut para caber a legenda com folga */
+@media (min-width: 980px){
+  #kpi-donut-wrap.chart-card{ min-height: 360px }
+}
+/* ===== Footer — glass + neon retrowave ===== */
+.app-footer{
+  position: relative;
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--grad-card);
+  box-shadow: var(--glow);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+
+.app-footer::before{
+  /* linha neon no topo */
+  content:""; position:absolute; left:10px; right:10px; top:0; height:2px;
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  opacity:.8; filter: blur(.6px);
+}
+
+.footer-inner{
+  display:grid; gap:12px;
+  padding: 18px;
+}
+@media (min-width: 820px){
+  .footer-inner{
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 20px 22px;
+  }
+}
+
+.footer-logo{
+  margin:0; line-height:1;
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+  background: linear-gradient(90deg, #bb26cb, var(--cyan) 55%, var(--pink));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+.footer-tagline{ margin:.25rem 0 .4rem; color:var(--muted) }
+.footer-tagline .accent{
+  background: linear-gradient(90deg, var(--cyan), var(--pink));
+  -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:600;
+}
+
+.copyright{ margin:0; color:var(--muted); font-size:.9rem }
+
+/* Socials do footer (reaproveita .icon-btn do header) */
+.footer-socials{
+  display:flex; align-items:center; gap:10px; justify-self:end;
+}
+.icon-btn.lg{ width:44px; height:44px; flex:0 0 44px }    /* maior no rodapé */
+.icon-btn.lg:hover{ transform: translateY(-1px) scale(1.02) }
+
+/* Glow decorativo no fundo */
+.footer-glow{
+  position:absolute; inset:auto -20% -30% -20%; height:160px;
+  background:
+    radial-gradient(60% 100% at 20% 40%, color-mix(in srgb, var(--cyan) 40%, transparent) 0%, transparent 70%),
+    radial-gradient(55% 100% at 80% 40%, color-mix(in srgb, var(--pink) 38%, transparent) 0%, transparent 70%);
+  filter: blur(24px);
+  pointer-events:none;
+  opacity:.35;
+}
+
+/* Tema claro: mais contraste */
+[data-theme="light"] .app-footer{
+  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.86));
+  border-color: rgba(2,6,23,.08);
+}
+/* ===== Help / "Como funciona" ======================================= */
+details.help-card{
+  border:1px solid var(--border);
+  border-radius:12px;
+  background: var(--grad-card);
+  box-shadow: var(--glow);
+  padding: 8px 12px;
+}
+
+/* remove o marcador padrão e adiciona caret custom */
+details.help-card > summary{
+  cursor:pointer; list-style:none;
+  display:flex; align-items:center; gap:10px;
+  font-weight:700; color:var(--text);
+}
+details.help-card > summary::-webkit-details-marker{ display:none }
+details.help-card > summary::after{
+  content:"▾"; margin-left:auto; opacity:.7; transition:.2s transform ease;
+}
+details.help-card[open] > summary::after{ transform: rotate(180deg) }
+
+.help-body{ padding:8px 2px 12px }
+.help-body .steps{ margin:0 0 8px 1.2rem }
+.help-body .steps li{ margin:4px 0 }
+
+.help-body .example{
+  margin:10px 0; padding:10px 12px;
+  border:1px dashed var(--border);
+  border-radius:10px;
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+}
+.help-body .example .title{ font-weight:700; margin-bottom:4px }
+
+.help-body .tips{
+  margin:10px 0 0 1rem; color:var(--muted)
+}
+
+.help-body b{ color:var(--text) }
+
+/* tema claro: reforça contraste do cartão de ajuda */
+[data-theme="light"] details.help-card{
+  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.86));
+  border-color: rgba(2,6,23,.08);
+}
+/* ===== Salário e Perfil — layout e controles ===== */
+.goals-grid{
+  display:grid; gap:14px;
+}
+@media (min-width: 980px){
+  .goals-grid{
+    grid-template-columns: 1fr 1.25fr;
+    align-items:start;
+  }
+}
+.label{ font-weight:600; margin-bottom:6px; display:block }
+
+/* input + botão na mesma linha (mesma altura) */
+.input-row{
+  display:grid;
+  grid-template-columns: 1fr auto;
+  gap:10px;
+  align-items:center;
+}
+
+/* altura padrão dos controles neste bloco */
+.goals input[type="text"],
+.goals input[type="number"],
+.goals .btn-sm,
+.goals .btn-md{
+  height:44px;
+  line-height:44px;
+}
+.goals .btn-sm{ padding:0 16px; font-size:.95rem; border-radius:10px }
+.goals .btn-md{ padding:0 18px; font-size:.96rem; border-radius:12px }
+
+/* ações dos sliders */
+.actions-row{
+  display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;
+}
+
+/* linha com reserva + pool */
+.kpis-line{ margin-top:10px }
+
+/* tabela das metas (só um respiro maior) */
+.goals-table{ margin-top:8px }
+
+/* mobile: empilha input e botão se faltar espaço */
+@media (max-width: 480px){
+  .input-row{ grid-template-columns: 1fr; }
+}
+
+/* opcional: fixa as ações enquanto rola os sliders (desktop) */
+@media (min-width: 980px){
+  .col-right .actions-row{
+    position: sticky; bottom: 0; padding-bottom: 2px;
+    background: linear-gradient(180deg, transparent 20%, color-mix(in srgb, var(--surface) 85%, transparent));
+  }
+}
+/* === Controles do bloco Salário — alinhamento perfeito === */
+:root{ --ctrl-h: 44px; } /* ajuste fino: 42~46 conforme seu gosto */
+
+.goals .input-row{
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 12px;
+  align-items: center;  /* alinha verticalmente */
+}
+
+/* Input: mesma altura do botão, sem “pular” */
+.goals .input-row input[type="text"]{
+  height: var(--ctrl-h);
+  line-height: calc(var(--ctrl-h) - 2px); /* compensa a borda */
+  padding: 0 14px;
+  box-sizing: border-box;
+  margin: 0;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+
+/* Botão compacto e centrado */
+.goals .input-row #btn-save-salary{
+  height: var(--ctrl-h);
+  line-height: var(--ctrl-h);
+  padding: 0 18px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  border-width: 1px;            /* mesma espessura do input */
+  box-sizing: border-box;
+}
+
+/* Opcional: reduzir sombra e “peso” óptico do botão nessa linha */
+.goals .input-row #btn-save-salary{
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--blue) 16%, transparent);
+}
+.goals .input-row #btn-save-salary:active{
+  transform: translateY(0); /* evita “afundar” e desalinha */
+}
+
+/* Mobile: empilha se faltar espaço */
+@media (max-width: 480px){
+  .goals .input-row{ grid-template-columns: 1fr; }
+}
+/* ===== Lançamentos — toolbar (form) =============================== */
+#tx-form{
+  display:grid; gap:10px; align-items:center;
+}
+
+/* Desktop: 6 colunas bem distribuídas */
+@media (min-width: 980px){
+  #tx-form{
+    grid-template-columns:
+      minmax(120px, 11rem)      /* data */
+      minmax(160px, 1fr)        /* descrição */
+      minmax(140px, 14rem)      /* categoria */
+      minmax(120px, 12rem)      /* tipo */
+      minmax(150px, 14rem)      /* valor */
+      auto;                     /* botão */
+  }
+}
+
+/* Mobile: empilha bonitinho */
+@media (max-width: 979px){
+  #tx-form{
+    grid-template-columns: 1fr 1fr;
+  }
+  #tx-form > button[type="submit"]{
+    grid-column: 1 / -1;        /* botão ocupa a linha inteira */
+    justify-self: end;
+  }
+}
+
+/* Altura e aparência dos controles do form */
+#tx-form input, #tx-form select, #tx-form button{
+  height: 44px;
+  line-height: 44px;
+  box-sizing: border-box;
+}
+#tx-form input, #tx-form select{
+  padding: 0 12px;
+}
+
+/* Botão "Adicionar" com um pouco mais de destaque */
+#tx-form button[type="submit"]{
+  padding: 0 18px;
+  font-weight: 700;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--blue), var(--cyan) 70%);
+  color: #fff;
+  border: 1px solid color-mix(in srgb, var(--blue) 45%, var(--border));
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--blue) 28%, transparent);
+  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+}
+#tx-form button[type="submit"]:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--blue) 34%, transparent);
+}
+#tx-form button[type="submit"]:active{ transform: translateY(0) }
+
+/* ===== Tabela de lançamentos — linhas/hover ======================= */
+.table-wrapper table tbody tr:hover{
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+}
+
+/* ===== Botão Excluir (contraste perfeito no light/dark) ========== */
+.btn-delete,
+.table-wrapper button[data-del]{
+  --del-bg: color-mix(in srgb, var(--danger) 12%, transparent);
+  --del-bd: color-mix(in srgb, var(--danger) 50%, var(--border));
+  --del-tx: var(--danger);
+
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--del-bd);
+  background: var(--del-bg);
+  color: var(--del-tx);
+  font-weight: 700;
+  letter-spacing: .2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+
+.btn-delete:hover,
+.table-wrapper button[data-del]:hover{
+  filter: brightness(1.05);
+  box-shadow: 0 8px 14px color-mix(in srgb, var(--danger) 22%, transparent);
+  transform: translateY(-1px);
+}
+
+.btn-delete:active,
+.table-wrapper button[data-del]:active{
+  transform: translateY(0);
+}
+
+/* Dark mode: versão “semipreta” com texto branco */
+[data-theme="dark"] .btn-delete,
+[data-theme="dark"] .table-wrapper button[data-del]{
+  --del-bg: color-mix(in srgb, var(--danger) 22%, transparent);
+  --del-bd: color-mix(in srgb, var(--danger) 58%, var(--border));
+  --del-tx: #fff;
+}
+
+/* Estado desabilitado (se for o caso) */
+.btn-delete:disabled,
+.table-wrapper button[data-del]:disabled{
+  opacity: .55; pointer-events: none;
+}
+
+/* Coluna de ações mais compacta e alinhada à direita */
+.table-wrapper table td:last-child,
+.table-wrapper table th:last-child{
+  text-align: right;
+  width: 120px;
+}
+/* Botão "Adicionar" do form de lançamentos */
+#tx-form button[type="submit"]{
+  height: 44px;                    /* mesma altura dos inputs */
+  line-height: 44px;
+  padding: 0 18px;
+  white-space: nowrap;
+  font-weight: 700;
+  letter-spacing: .2px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--blue) 48%, var(--border));
+  background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 70%);
+  color: #fff;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--blue) 26%, transparent);
+  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+  justify-self: end;               /* gruda na coluna final do grid */
+  margin-right: 6px;               /* respiro da borda do card */
+}
+
+#tx-form button[type="submit"]:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--blue) 34%, transparent);
+}
+#tx-form button[type="submit"]:active{
+  transform: translateY(0);
+}
+#tx-form button[type="submit"]:focus-visible{
+  outline: none;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--cyan) 42%, transparent),
+    0 10px 22px color-mix(in srgb, var(--blue) 30%, transparent);
+}
+
+/* Dark mode: um pouco menos brilho */
+[data-theme="dark"] #tx-form button[type="submit"]{
+  box-shadow: 0 8px 16px color-mix(in srgb, var(--cyan) 22%, transparent);
+}
+
+@media (max-width: 979px){
+  /* no mobile, o botão já ocupa a linha toda pelo grid (como fizemos antes),
+     então só removo o margin-right para centralizar melhor o brilho */
+  #tx-form button[type="submit"]{ margin-right: 0; justify-self: end; }
+}
+/* Variante com ícone "+" */
+#tx-form .btn-add{
+  height: 60px; line-height: 60px; padding: 0 18px;
+  font-weight: 700; letter-spacing: .2px; white-space: nowrap;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--blue) 48%, var(--border));
+  background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 70%);
+  color: #fff;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--blue) 26%, transparent);
+  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+  justify-self: end; margin-right: 6px; position: relative;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+
+#tx-form .btn-add::before{
+  content: "+"; font-weight: 900; line-height: 1; font-size: 1.1rem;
+}
+
+#tx-form .btn-add:hover{ transform: translateY(-1px); filter: brightness(1.04);
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--blue) 34%, transparent); }
+#tx-form .btn-add:active{ transform: translateY(0) }
+#tx-form .btn-add:focus-visible{
+  outline:none;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--cyan) 42%, transparent),
+    0 10px 22px color-mix(in srgb, var(--blue) 30%, transparent);
+}
+
+[data-theme="dark"] #tx-form .btn-add{
+  box-shadow: 0 8px 16px color-mix(in srgb, var(--cyan) 22%, transparent);
+}
+
+@media (max-width: 979px){
+  #tx-form .btn-add{ margin-right: 0; }
+}
+/* --- Toolbar de lançamentos (linha do formulário) --- */
+#tx-form{
+  padding-inline: 8px;          /* respiro nas laterais do card */
+}
+
+/* Botão "Adicionar" – sombra neutra e sem bleed */
+#tx-form button[type="submit"]{
+  height: 44px;
+  line-height: 44px;
+  padding: 0 18px;
+  white-space: nowrap;
+  font-weight: 700;
+  letter-spacing: .2px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--blue) 45%, var(--border));
+  background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 70%);
+  /* sombra curta e neutra (não “pinta” o fundo do card) */
+  box-shadow:
+    0 2px 10px rgba(0,0,0,.22),
+    0 0 0 1px color-mix(in srgb, var(--blue) 25%, transparent) inset;
+  transform: translateZ(0);      /* evita artefatos de composição */
+  margin-right: 0;               /* sem empurrar pro canto */
+  justify-self: end;             /* alinha à direita do grid */
+}
+
+/* Hover/active mais sutil (sem jogar cyan no fundo) */
+#tx-form button[type="submit"]:hover{
+  filter: brightness(1.03);
+  box-shadow:
+    0 4px 14px rgba(0,0,0,.26),
+    0 0 0 1px color-mix(in srgb, var(--blue) 35%, transparent) inset;
+}
+#tx-form button[type="submit"]:active{
+  transform: translateY(0);
+}
+
+/* Dark mode: mesma ideia, só um pouco mais de blur */
+[data-theme="dark"] #tx-form button[type="submit"]{
+  box-shadow:
+    0 3px 12px rgba(0,0,0,.35),
+    0 0 0 1px color-mix(in srgb, var(--cyan) 24%, transparent) inset;
+}
+
+/* Se quiser ainda mais “flat”, comente o box-shadow acima e habilite esta linha: */
+/* #tx-form button[type="submit"]{ box-shadow: none; } */
+/* ===== Categorias — toolbar/linha de inclusão ===================== */
+/* organiza a linha: nome | cor | preview | botão */
+section[aria-labelledby="cats-title"] > .grid{
+  display: grid;
+  gap: 10px;
+  align-items: center;
+}
+@media (min-width: 980px){
+  section[aria-labelledby="cats-title"] > .grid{
+    grid-template-columns: 1fr minmax(140px,16rem) 14px auto;
+  }
+}
+/* altura consistente dos controles */
+section[aria-labelledby="cats-title"] > .grid input[type="text"],
+section[aria-labelledby="cats-title"] > .grid input[type="color"],
+section[aria-labelledby="cats-title"] > .grid button{
+  height: 44px;
+  line-height: 44px;
+  box-sizing: border-box;
+}
+
+/* preview vertical da cor (se existir) */
+.color-preview,
+#cat-color-preview{
+  width: 12px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+}
+
+/* ===== Botão "Adicionar" (Categorias) ============================= */
+#btn-add-cat{
+  padding: 0 18px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--blue) 46%, var(--border));
+  background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 70%);
+  color: #fff;
+  justify-self: end;
+  /* sombra curta e neutra (sem “mancha” no card) */
+  box-shadow: 0 2px 10px rgba(0,0,0,.22),
+              0 0 0 1px color-mix(in srgb, var(--blue) 24%, transparent) inset;
+  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+}
+#btn-add-cat:hover{
+  filter: brightness(1.04);
+  box-shadow: 0 4px 14px rgba(0,0,0,.26),
+              0 0 0 1px color-mix(in srgb, var(--blue) 34%, transparent) inset;
+  transform: translateY(-1px);
+}
+#btn-add-cat:active{ transform: translateY(0) }
+#btn-add-cat:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cyan) 42%, transparent),
+              0 8px 18px rgba(0,0,0,.22);
+}
+/* dark: brilho um pouco mais suave */
+[data-theme="dark"] #btn-add-cat{
+  box-shadow: 0 3px 12px rgba(0,0,0,.35),
+              0 0 0 1px color-mix(in srgb, var(--cyan) 22%, transparent) inset;
+}
+
+/* mobile: empilha */
+@media (max-width: 640px){
+  section[aria-labelledby="cats-title"] > .grid{
+    grid-template-columns: 1fr 1fr;
+  }
+  .color-preview, #cat-color-preview{ grid-column: span 2; height: 12px; }
+  #btn-add-cat{ grid-column: 2; justify-self: end; }
+}
+/* ===== Categorias — toolbar ======================================= */
+/* grid da primeira linha: [nome] [cor] [botão] */
+section[aria-labelledby="cats-title"] > .grid{
+  display: grid;
+  gap: 10px;
+  align-items: center;
+}
+
+/* desktop: 3 colunas proporcionais */
+@media (min-width: 980px){
+  section[aria-labelledby="cats-title"] > .grid{
+    grid-template-columns: 1fr minmax(160px,18rem) auto;
+  }
+}
+
+/* mobile: empilha e mantém o botão à direita */
+@media (max-width: 979px){
+  section[aria-labelledby="cats-title"] > .grid{
+    grid-template-columns: 1fr 1fr;
+  }
+  #btn-add-cat{ grid-column: 2; justify-self: end; }
+}
+
+/* altura consistente dos controles */
+#new-cat-name,
+#new-cat-color,
+#btn-add-cat{
+  height: 44px;
+  line-height: 44px;
+  box-sizing: border-box;
+}
+
+/* ===== Coloris (alinhamento do swatch no input de cor) ============ */
+/* o Coloris envolve o input com .clr-field e injeta um <button> (swatch) */
+.clr-field{ position: relative; width: 100%; }
+.clr-field input{
+  height: 44px;
+  line-height: 44px;
+  padding: 0 50px 0 12px;     /* espaço pro swatch à direita */
+  box-sizing: border-box;
+}
+/* swatch alinhado à direita do input */
+.clr-field button{
+  position: absolute;
+  top: 50%; right: 8px; transform: translateY(-50%);
+  width: 32px; height: 28px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--border);
+  margin: 0 !important;      /* remove possíveis margens do tema */
+  cursor: pointer;
+}
+/* modo escuro: borda mais suave */
+[data-theme="dark"] .clr-field button{
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
+/* se tiver sobrado algum preview antigo, esconda */
+.color-preview, #cat-color-preview{ display: none !important; }
+
+/* ===== Botão "Adicionar" (Categorias) ============================= */
+#btn-add-cat{
+  padding: 0 18px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--blue) 46%, var(--border));
+  background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 70%);
+  color: #fff;
+  justify-self: end;
+  /* sombra curta e neutra (sem mancha no card) */
+  box-shadow:
+    0 2px 10px rgba(0,0,0,.22),
+    0 0 0 1px color-mix(in srgb, var(--blue) 24%, transparent) inset;
+  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+}
+#btn-add-cat:hover{
+  filter: brightness(1.04);
+  box-shadow:
+    0 4px 14px rgba(0,0,0,.26),
+    0 0 0 1px color-mix(in srgb, var(--blue) 34%, transparent) inset;
+  transform: translateY(-1px);
+}
+#btn-add-cat:active{ transform: translateY(0) }
+#btn-add-cat:focus-visible{
+  outline: none;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--cyan) 42%, transparent),
+    0 8px 18px rgba(0,0,0,.22);
+}
+[data-theme="dark"] #btn-add-cat{
+  box-shadow:
+    0 3px 12px rgba(0,0,0,.35),
+    0 0 0 1px color-mix(in srgb, var(--cyan) 22%, transparent) inset;
+}
+/* ==== FIX CATEGORIAS: Nome | Cor (Coloris) | Adicionar =================== */
+:root{ --catCtrlH: 44px; } /* altura padrão dos controles */
+
+section[aria-labelledby="cats-title"] > .grid{
+  display: grid !important;
+  grid-template-columns: 1fr minmax(160px, 18rem) auto !important; /* 3 colunas reais */
+  gap: 12px !important;
+  align-items: center !important;
+}
+
+/* Altura/box-sizing idênticos para os três controles */
+#new-cat-name,
+#new-cat-color,
+#btn-add-cat,
+section[aria-labelledby="cats-title"] .clr-field input{
+  height: var(--catCtrlH) !important;
+  line-height: var(--catCtrlH) !important;
+  box-sizing: border-box !important;
+}
+
+/* Coloris: garante wrapper e swatch alinhados à direita dentro do input */
+section[aria-labelledby="cats-title"] .clr-field{
+  position: relative !important;
+  width: 100% !important;
+}
+section[aria-labelledby="cats-title"] .clr-field input{
+  padding: 0 52px 0 12px !important;     /* espaço para o swatch */
+}
+section[aria-labelledby="cats-title"] .clr-field button{
+  position: absolute !important;
+  right: 8px; top: 50%; transform: translateY(-50%);
+  width: 34px; height: 30px;
+  border: 0; border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--border);
+  margin: 0 !important;
+  cursor: pointer;
+}
+
+/* Qualquer “preview” legado some (era o que criava a coluna de 14px) */
+.color-preview, #cat-color-preview{ display: none !important; }
+
+/* Botão sempre alinhado à direita e centrado verticalmente */
+#btn-add-cat{
+  justify-self: end !important;
+  align-self: center !important;
+  padding: 0 18px !important;
+}
+
+/* Mobile: 2 colunas (nome | cor) e o botão vai para a 2ª coluna */
+@media (max-width: 640px){
+  section[aria-labelledby="cats-title"] > .grid{
+    grid-template-columns: 1fr 1fr !important;
+  }
+  #btn-add-cat{ grid-column: 2; justify-self: end; }
+}
+/* === Alinhamento fino da toolbar de Categorias ==================== */
+:root{ --catCtrlH: 44px; } /* altura padrão que estamos usando */
+
+/* garante altura e box model idênticos */
+#new-cat-name{
+  height: var(--catCtrlH) !important;
+  line-height: calc(var(--catCtrlH) - 2px) !important; /* compensa a borda */
+  padding: 0 12px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  -webkit-appearance: none;
+          appearance: none;
+  display: block;
+}
+
+/* mantém o input de cor com a mesma linha-base do texto */
+section[aria-labelledby="cats-title"] .clr-field input{
+  height: var(--catCtrlH) !important;
+  line-height: calc(var(--catCtrlH) - 2px) !important;
+  padding: 0 52px 0 12px !important; /* espaço para o swatch à direita */
+  box-sizing: border-box !important;
+}
+
+/* botão “Adicionar” no mesmo eixo vertical */
+#btn-add-cat{
+  height: var(--catCtrlH) !important;
+  line-height: var(--catCtrlH) !important;
+  padding: 0 18px !important;
+  align-self: center !important;  /* força centralização na linha */
+  justify-self: end !important;
+}
+/* micro-ajuste óptico (use só se precisar) */
+#new-cat-name{ transform: translateY(-1px); }
+/* Espaço entre a barra (nome+cor+adicionar) e a lista de categorias */
+section[aria-labelledby="cats-title"] > .grid{
+  margin-bottom: 16px;   /* ajuste fino aqui: 12–24px conforme seu gosto */
+}
+
+/* (Opcional) se quiser ainda mais respiro visual no topo da lista */
+#cats-list{
+  padding-top: 4px;      /* bem leve, só para não “colar” no grid */
+}
+
+/* (Opcional) se suas linhas já são blocos independentes, dá para usar gap: */
+#cats-list{
+  display: grid;
+  gap: 10px;             /* distância vertical uniforme entre as linhas */
+}
+/* === SOBRE =========================================================== */
+.about .card{ padding:16px; }
+.about-hero{
+  display:grid; gap:16px; align-items:center;
+  grid-template-columns: 96px 1fr;
+}
+.about-hero img{
+  width:96px; height:96px; border-radius:50%;
+  object-fit:cover;
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+.about-hero .about-text h3{ margin:0 0 6px; }
+.about-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
+
+.about-subtitle{ margin:18px 0 8px; }
+
+/* Projetos do GitHub */
+.gh-grid{
+  display:grid; gap:12px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.gh-card{
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+  display:flex; flex-direction:column; gap:8px;
+}
+.gh-card__title a{
+  font-weight:800; text-decoration:none; color:var(--text);
+}
+.gh-card__title a:hover{ text-decoration:underline; }
+.gh-card__desc{ min-height: 38px; }
+.gh-card__meta{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.tag{
+  font-size:.85rem; padding:4px 8px; border-radius:999px;
+  background: color-mix(in srgb, var(--blue) 10%, var(--surface));
+  border:1px solid color-mix(in srgb, var(--blue) 35%, var(--border));
+}
+.gh-card__actions{ margin-top:auto; }
+
+/* skeleton/loading */
+.gh-card.skeleton{
+  position:relative; overflow:hidden; min-height:120px;
+}
+.gh-card.skeleton::before{
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(90deg,
+    transparent, color-mix(in srgb, var(--text) 6%, transparent), transparent);
+  animation: shimmer 1.2s linear infinite;
+}
+@keyframes shimmer{ from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+
+.gh-empty{
+  padding:16px; text-align:center; border:1px dashed var(--border);
+  border-radius:12px; background: color-mix(in srgb, var(--surface) 92%, transparent);
+}
+@media (min-width: 900px){
+  .about-hero{ grid-template-columns: 120px 1fr; }
+  .about-hero img{ width:120px; height:120px; }
+}
+/* ===== SOBRE =============================================================== */
+.about{ margin-top: 22px; }
+.about .card{ padding: 18px; }
+
+/* HERO: avatar + texto alinhadinhos */
+.about-hero{
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 18px;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+}
+.about-hero img{
+  width: 112px; height: 112px; border-radius: 14px; object-fit: cover;
+  box-shadow: 0 10px 26px rgba(0,0,0,.18);
+}
+.about-hero .about-text h3{ margin: 0 0 6px; font-size: 1.4rem; }
+.about-hero .about-text .muted{ margin: 0 0 10px; }
+
+.about-actions{ display: flex; flex-wrap: wrap; gap: 10px; }
+.about-actions .btn.btn-ghost{
+  height: 36px; padding: 0 12px; border-radius: 999px; font-weight: 700;
+  border-color: color-mix(in srgb, var(--blue) 35%, var(--border));
+  background: color-mix(in srgb, var(--blue) 8%, var(--surface));
+}
+
+/* subtítulo dos projetos */
+.about-subtitle{ margin: 20px 0 10px; font-size: 1.2rem; }
+
+/* GRID de projetos */
+.gh-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+/* Card de projeto: 3 linhas (título | conteúdo flex | rodapé) */
+.gh-card{
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: 0 8px 18px rgba(0,0,0,.08);
+  min-height: 220px;
+}
+.gh-card__title{
+  padding: 8px 10px; margin: -4px -4px 0 -4px;
+  border-radius: 12px;
+  background:
+    radial-gradient(90px 60px at 90% -20%, color-mix(in srgb, var(--cyan) 24%, transparent), transparent),
+    radial-gradient(90px 60px at 0% -30%, color-mix(in srgb, var(--blue) 22%, transparent), transparent);
+  border: 1px solid color-mix(in srgb, var(--blue) 35%, var(--border));
+}
+.gh-card__title a{
+  font-weight: 800; text-decoration: none; color: var(--text);
+}
+.gh-card__title a:hover{ text-decoration: underline; }
+
+/* descrição com clamp pra equalizar altura visual */
+.gh-card__desc{
+  /* Fallback + WebKit (Chrome/Safari/Edge) */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+
+  /* Padrão (spec) — cada vez mais navegadores já entendem */
+  line-clamp: 4;
+}
+
+/* meta/badges */
+.gh-card__meta{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.tag{
+  font-size:.85rem; padding:4px 8px; border-radius:999px;
+  background: color-mix(in srgb, var(--blue) 10%, var(--surface));
+  border:1px solid color-mix(in srgb, var(--blue) 35%, var(--border));
+  display: inline-flex; align-items:center; gap:6px;
+}
+.tag .dot{
+  width:8px; height:8px; border-radius:50%;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 18%, transparent);
+}
+
+/* rodapé fixa no fim do card */
+.gh-card__actions{ margin-top: 6px; }
+.gh-card__actions .btn{ height: 36px; border-radius: 10px; }
+
+/* skeleton */
+.gh-card.skeleton{ position:relative; overflow:hidden; min-height: 160px; }
+.gh-card.skeleton::before{
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(90deg, transparent,
+    color-mix(in srgb, var(--text) 6%, transparent), transparent);
+  animation: shimmer 1.2s linear infinite;
+}
+@keyframes shimmer{ from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+
+/* Responsivo do hero */
+@media (max-width: 720px){
+  .about-hero{ grid-template-columns: 80px 1fr; }
+  .about-hero img{ width:80px; height:80px; border-radius: 10px; }
+}
