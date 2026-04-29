@@ -22,6 +22,14 @@
 - **Responsivo (mobile-first)** e toasts acessíveis.
 - **Seção Sobre** com destaque de projetos do GitHub.
 
+### 🔄 Atualizações de Design (De x Para)
+- **De:** Formulário de lançamentos blocky e com bordas pesadas.
+  **Para:** Inputs em estilo flutuante (floating borders), limpos, minimalistas e elegantes, adequados a um SaaS premium.
+- **De:** Seção de Categorias solta e independente na interface.
+  **Para:** Modal (Popup) integrado e centralizado, focado na experiência de fluxo de trabalho. Adição, seleção automática e fechamento com apenas um clique.
+- **De:** Backgrounds estáticos simples.
+  **Para:** Wallpapers com Parallax de Wall Street / NY (Versão Dia/Noite), com sutil desfoque (1px), garantindo total nitidez do Dashboard.
+
 ## 🚀 Como usar
 1. Abra a **demo** ou baixe o repositório.
 2. Informe o **salário líquido** e ajuste o **perfil** com os sliders (90%).

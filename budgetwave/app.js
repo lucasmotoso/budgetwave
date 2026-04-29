@@ -255,6 +255,11 @@ function colorFromString(str, s = 65, l = 55) {
       o.value = c.id; o.textContent = c.name;
       sel.appendChild(o);
     });
+    const addOpt = document.createElement('option');
+    addOpt.value = '__manage__';
+    addOpt.textContent = '+ Nova Categoria...';
+    sel.appendChild(addOpt);
+
     if (prev && state.categories.some(c=>c.id===prev)) sel.value = prev;
   }
 
@@ -283,6 +288,17 @@ function colorFromString(str, s = 65, l = 55) {
 
   function initTxForm(){
     const form = $('#tx-form'); if (!form) return;
+    const catSel = $('#tx-category');
+    if (catSel) {
+      catSel.addEventListener('change', (e) => {
+        if (e.target.value === '__manage__') {
+          e.target.value = ''; // reset immediately
+          const modal = $('#modal-manage-cats');
+          if (modal) modal.showModal();
+        }
+      });
+    }
+
     form.addEventListener('submit', (e)=>{
       e.preventDefault();
       const date = $('#tx-date')?.value || (new Date().toISOString().slice(0,10));
@@ -478,7 +494,7 @@ function renderKpiDonut() {
 
   // ---------- Categorias ----------
   function renderCats() {
-    const box = $('#cats-list'); 
+    const box = $('#modal-cats-list'); 
     if (!box) return;
 
     box.innerHTML = '';
@@ -487,14 +503,19 @@ function renderKpiDonut() {
       el.className = 'row';
       el.innerHTML = `
         <span class="left"><span class="badge" style="background:${c.color}"></span>${c.name}</span>
-        <button class="btn btn-ghost" data-delcat="${c.id}" title="Excluir">✖</button>
+        <button class="btn-delcat" data-delcat="${c.id}" title="Excluir">✖</button>
       `;
       box.appendChild(el);
     });
   }
 
   function initCats(){
-    $('#btn-add-cat')?.addEventListener('click', ()=>{
+    const modal = $('#modal-manage-cats');
+    $('#btn-close-modal')?.addEventListener('click', () => {
+      if (modal) modal.close();
+    });
+    
+    $('#btn-modal-add-cat')?.addEventListener('click', ()=>{
       const name = $('#new-cat-name')?.value.trim();
       const color = $('#new-cat-color')?.value || '#14b8a6';
       if (!name) { toast('Informe o nome da categoria.', 'error'); return; }
@@ -503,9 +524,14 @@ function renderKpiDonut() {
       $('#new-cat-name').value = '';
       save(); renderCats(); hydrateCategorySelect(); renderSliders(); refreshAll();
       toast('Categoria adicionada.', 'success');
+      
+      // Auto-select in form
+      const sel = $('#tx-category');
+      if (sel) sel.value = state.categories[state.categories.length-1].id;
+      if (modal) modal.close();
     });
 
-    $('#cats-list')?.addEventListener('click', (e)=>{
+    $('#modal-cats-list')?.addEventListener('click', (e)=>{
       const id = e.target?.closest('button[data-delcat]')?.dataset.delcat;
       if (!id) return;
       const cat = byId(id);

@@ -18,6 +18,11 @@
       href="https://unpkg.com/@picocss/pico@2.0.6/css/pico.min.css"
     />
 
+    <!-- Fonts (Inter & Share Tech Mono para look 80s Wall Street) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
     <!-- Color picker (para o input de cor das categorias) -->
     <link
       rel="stylesheet"
@@ -36,10 +41,9 @@
     <main class="container">
       <header class="app-header">
         <div class="brand">
-          <h1>BudgetWave</h1>
+          <h1>BUDGET_WAVE</h1>
           <p class="tagline">
-            Planejamento inteligente com
-            <span class="accent">metas automáticas</span>.
+            TERMINAL FINANCEIRO // <span class="accent">SYS.METAS_AUTO</span>
           </p>
         </div>
 
@@ -303,26 +307,44 @@
       </section>
 
       <!-- Lançamentos -->
-      <section aria-labelledby="tx-title">
+      <section aria-labelledby="tx-title" class="tx-section">
         <h2 id="tx-title">Lançamentos</h2>
 
-        <form id="tx-form" class="grid">
-          <input id="tx-date" type="date" />
-          <input id="tx-desc" type="text" placeholder="Descrição" />
-          <select id="tx-category" aria-label="Categoria"></select>
-          <select id="tx-type">
-            <option value="expense">Despesa</option>
-            <option value="income">Receita</option>
-          </select>
-          <input
-            id="tx-amount"
-            type="text"
-            placeholder="Valor (Ex.: 125,90)"
-            data-mask="brl"
-          />
-         <button type="submit" class="btn-add">Add</button>
-
-        </form>
+        <div class="tx-card card">
+          <form id="tx-form" class="tx-form">
+            <div class="form-row">
+              <div class="input-group">
+                <label for="tx-date">Data</label>
+                <input id="tx-date" type="date" aria-label="Data do lançamento" required />
+              </div>
+              <div class="input-group">
+                <label for="tx-type">Tipo</label>
+                <select id="tx-type" aria-label="Tipo de Lançamento" required>
+                  <option value="expense">Despesa</option>
+                  <option value="income">Receita</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="tx-amount">Valor (R$)</label>
+                <input id="tx-amount" type="text" placeholder="R$ 0,00" data-mask="brl" aria-label="Valor" required />
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="input-group" style="flex: 2;">
+                <label for="tx-desc">Descrição</label>
+                <input id="tx-desc" type="text" placeholder="Ex: Mercado, Uber..." aria-label="Descrição" required />
+              </div>
+              <div class="input-group" style="flex: 1;">
+                <label for="tx-category">Categoria</label>
+                <select id="tx-category" aria-label="Categoria" required></select>
+              </div>
+              <div class="input-group btn-group">
+                <button type="submit" class="btn btn-add">Lançar</button>
+              </div>
+            </div>
+          </form>
+        </div>
 
         <div class="table-wrapper">
           <table role="grid">
@@ -333,7 +355,7 @@
                 <th>Categoria</th>
                 <th>Tipo</th>
                 <th class="right">Valor</th>
-                <th>Ações</th>
+                <th class="right">Ações</th>
               </tr>
             </thead>
             <tbody id="tx-tbody"></tbody>
@@ -341,16 +363,27 @@
         </div>
       </section>
 
-      <!-- Categorias -->
-      <section aria-labelledby="cats-title">
-        <h2 id="cats-title">Categorias</h2>
-        <div class="grid">
-          <input id="new-cat-name" type="text" placeholder="Nova categoria" />
-          <input id="new-cat-color" type="text" value="#14b8a6" data-coloris />
-          <button id="btn-add-cat" class="secondary">Adicionar</button>
+      <!-- Modal Gerenciar Categorias -->
+      <dialog id="modal-manage-cats" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Categorias</h3>
+            <button type="button" class="btn-close-modal" id="btn-close-modal" aria-label="Fechar">✖</button>
+          </div>
+          <div class="modal-body">
+            <form id="modal-cat-form" class="cat-form" onsubmit="event.preventDefault(); document.getElementById('btn-modal-add-cat').click()">
+              <div class="cat-input-group">
+                <input id="new-cat-name" type="text" placeholder="Nova categoria" required />
+                <div class="color-picker-wrap" title="Cor">
+                  <input id="new-cat-color" type="text" value="#14b8a6" data-coloris />
+                </div>
+                <button id="btn-modal-add-cat" type="button" class="btn">Adicionar</button>
+              </div>
+            </form>
+            <div id="modal-cats-list" class="cats-list-container"></div>
+          </div>
         </div>
-        <div id="cats-list"></div>
-      </section>
+      </dialog>
 <!-- Sobre -->
 <section id="about" aria-labelledby="about-title" class="about">
   <h2 id="about-title">Sobre</h2>
@@ -363,7 +396,7 @@
     <div class="about-text">
       <h3>Olá! Eu sou o Lucas Motoso</h3>
       <p class="muted">
-        Analista de Sistemas com foco em BI e Web Analytics: transformo dados em decisão com Power BI/SQL e produtos web performáticos (HTML/CSS/JS) com UX acessível.
+        Especialista em Web Analytics com ênfase em BigQuery (BQ), Google Cloud Platform (GCP), Growth e Canais Digitais. Foco em transformar dados brutos em inteligência executiva para otimização contínua.
       </p>
 
       <div class="about-actions">
